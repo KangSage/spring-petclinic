@@ -1,0 +1,7 @@
+database: mysql
+spring:
+    datasource:
+        password: petclinic
+        url: jdbc:mysql://localhost/petclinic
+        username: root
+        driver-class-name: com.mysql.cj.jdbc.Driver
