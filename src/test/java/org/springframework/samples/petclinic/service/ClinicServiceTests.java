@@ -97,7 +97,7 @@ public class ClinicServiceTests {
     @Test
     @Transactional
     public void shouldInsertOwner() {
-        Collection<Owner> owners = this.owners.findByLastName("Schultz");
+        Collection<Owner> owners = this.owners.findByFirstName("Sam");
         int found = owners.size();
 
         Owner owner = new Owner();
@@ -106,6 +106,7 @@ public class ClinicServiceTests {
         owner.setAddress("4, Evans Street");
         owner.setCity("Wollongong");
         owner.setTelephone("4444444444");
+        owner.setAges("11");
         this.owners.save(owner);
         assertThat(owner.getId().longValue()).isNotEqualTo(0);
 
@@ -117,15 +118,15 @@ public class ClinicServiceTests {
     @Transactional
     public void shouldUpdateOwner() {
         Owner owner = this.owners.findById(1);
-        String oldLastName = owner.getLastName();
-        String newLastName = oldLastName + "X";
+        String oldFirstName = owner.getFirstName();
+        String newFirstName = oldFirstName + "X";
 
-        owner.setLastName(newLastName);
+        owner.setFirstName(newFirstName);
         this.owners.save(owner);
 
         // retrieving new name from database
         owner = this.owners.findById(1);
-        assertThat(owner.getLastName()).isEqualTo(newLastName);
+        assertThat(owner.getFirstName()).isEqualTo(newFirstName);
     }
 
     @Test

@@ -66,6 +66,7 @@ public class OwnerControllerTests {
         george.setAddress("110 W. Liberty St.");
         george.setCity("Madison");
         george.setTelephone("6085551023");
+        george.setAges("11");
         given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
     }
 
@@ -85,6 +86,7 @@ public class OwnerControllerTests {
             .param("address", "123 Caramel Street")
             .param("city", "London")
             .param("telephone", "01316761638")
+            .param("ages", "11")
         )
             .andExpect(status().is3xxRedirection());
     }
@@ -100,6 +102,7 @@ public class OwnerControllerTests {
             .andExpect(model().attributeHasErrors("owner"))
             .andExpect(model().attributeHasFieldErrors("owner", "address"))
             .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+            .andExpect(model().attributeHasFieldErrors("owner", "ages"))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
 
@@ -113,30 +116,47 @@ public class OwnerControllerTests {
 
     @Test
     public void testProcessFindFormSuccess() throws Exception {
-        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
+        given(this.owners.findByFirstName("")).willReturn(Lists.newArrayList(george, new Owner()));
         mockMvc.perform(get("/owners"))
             .andExpect(status().isOk())
             .andExpect(view().name("owners/ownersList"));
     }
 
     @Test
-    public void testProcessFindFormByLastName() throws Exception {
-        given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+//    public void testProcessFindFormByLastName() throws Exception {
+//        given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+//        mockMvc.perform(get("/owners")
+//            .param("lastName", "Franklin")
+//        )
+//            .andExpect(status().is3xxRedirection())
+//            .andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
+//    }
+    public void testProcessFindFormByFirstName() throws Exception {
+        given(this.owners.findByFirstName(george.getFirstName())).willReturn(Lists.newArrayList(george));
         mockMvc.perform(get("/owners")
-            .param("lastName", "Franklin")
+            .param("firstName", "George")
         )
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
     }
 
     @Test
+//    public void testProcessFindFormNoOwnersFound() throws Exception {
+//        mockMvc.perform(get("/owners")
+//            .param("lastName", "Unknown Surname")
+//        )
+//            .andExpect(status().isOk())
+//            .andExpect(model().attributeHasFieldErrors("owner", "lastName"))
+//            .andExpect(model().attributeHasFieldErrorCode("owner", "lastName", "notFound"))
+//            .andExpect(view().name("owners/findOwners"));
+//    }
     public void testProcessFindFormNoOwnersFound() throws Exception {
         mockMvc.perform(get("/owners")
-            .param("lastName", "Unknown Surname")
+            .param("first", "Unknown Surname")
         )
             .andExpect(status().isOk())
-            .andExpect(model().attributeHasFieldErrors("owner", "lastName"))
-            .andExpect(model().attributeHasFieldErrorCode("owner", "lastName", "notFound"))
+            .andExpect(model().attributeHasFieldErrors("owner", "firstName"))
+            .andExpect(model().attributeHasFieldErrorCode("owner", "firstName", "notFound"))
             .andExpect(view().name("owners/findOwners"));
     }
 
@@ -150,6 +170,7 @@ public class OwnerControllerTests {
             .andExpect(model().attribute("owner", hasProperty("address", is("110 W. Liberty St."))))
             .andExpect(model().attribute("owner", hasProperty("city", is("Madison"))))
             .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
+            .andExpect(model().attribute("owner", hasProperty("ages", is("11"))))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
 
@@ -161,6 +182,7 @@ public class OwnerControllerTests {
             .param("address", "123 Caramel Street")
             .param("city", "London")
             .param("telephone", "01616291589")
+            .param("ages", "11")
         )
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/{ownerId}"));
@@ -189,6 +211,7 @@ public class OwnerControllerTests {
             .andExpect(model().attribute("owner", hasProperty("address", is("110 W. Liberty St."))))
             .andExpect(model().attribute("owner", hasProperty("city", is("Madison"))))
             .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
+            .andExpect(model().attribute("owner", hasProperty("ages", is("11"))))
             .andExpect(view().name("owners/ownerDetails"));
     }
 
